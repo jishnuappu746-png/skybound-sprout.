@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#79d8ff">
+  <meta name="description" content="Skybound Sprout — a colorful original eight-stage platform adventure.">
+  <title>Skybound Sprout</title>
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+  <main class="game-shell" aria-label="Skybound Sprout platform game">
+    <div class="game-frame">
+      <canvas id="game" width="960" height="540" aria-label="Game area"></canvas>
+      <div class="vignette" aria-hidden="true"></div>
+
+      <header class="hud" id="hud" hidden>
+        <div class="hud-chip level-chip"><span class="chip-icon">✦</span><span id="hud-level">MEADOW 1</span></div>
+        <div class="hud-chip"><span class="chip-icon coin-icon">●</span><span id="hud-coins">00</span></div>
+        <div class="hud-chip"><span class="chip-icon heart-icon">♥</span><span id="hud-lives">3</span></div>
+        <div class="hud-chip score-chip"><span class="chip-icon">★</span><span id="hud-score">000000</span></div>
+        <div class="hud-right">
+          <div class="health-wrap" aria-label="Player health"><span id="health-hearts">♥ ♥ ♥</span></div>
+          <div class="timer-wrap"><span>TIME</span> <span id="hud-timer">300</span></div>
+        </div>
+        <button class="icon-button pause-button" id="pause-button" aria-label="Pause game" title="Pause (Esc)">Ⅱ</button>
+      </header>
+
+      <div class="boss-hud" id="boss-hud" hidden>
+        <div class="boss-name">Brambleback <small>THE THORN KING</small></div>
+        <div class="boss-meter"><span id="boss-health"></span></div>
+      </div>
+
+      <section class="screen menu-screen" id="main-menu">
+        <div class="menu-card">
+          <div class="brand-mark" aria-hidden="true"><span class="brand-leaf">✿</span><span class="brand-star">✦</span></div>
+          <p class="eyebrow">A LITTLE ADVENTURE ABOVE THE CLOUDS</p>
+          <h1>Skybound<br><em>Sprout</em></h1>
+          <p class="tagline">Big jumps. Bright days. One brave little sprout.</p>
+          <div class="menu-actions">
+            <button class="button button-primary" id="play-button"><span>Play adventure</span><span class="button-arrow">→</span></button>
+            <button class="button button-secondary" id="levels-button">Choose a level <span id="unlocked-label">01 / 08</span></button>
+            <div class="menu-small-actions">
+              <button class="text-button" id="how-button">How to play</button>
+              <button class="text-button" id="settings-button">Settings</button>
+              <button class="text-button" id="credits-button">Credits</button>
+              <button class="text-button sound-toggle" id="sound-button" aria-label="Toggle sound">♫ <span>Sound on</span></button>
+            </div>
+          </div>
+          <div class="save-note"><span class="save-dot"></span> Progress saves automatically</div>
+        </div>
+        <div class="menu-decoration deco-cloud cloud-one"></div>
+        <div class="menu-decoration deco-cloud cloud-two"></div>
+        <div class="menu-sprout" aria-hidden="true"><div class="sprout-leaf left"></div><div class="sprout-leaf right"></div><div class="sprout-face">⌣</div></div>
+        <span class="menu-version">ORIGINAL PLATFORM ADVENTURE · 2026</span>
+      </section>
+
+      <section class="screen compact-screen" id="pause-screen" hidden>
+        <div class="dialog-card">
+          <div class="dialog-kicker">TAKE A BREATHER</div>
+          <h2>Paused</h2>
+          <p>Your adventure is right where you left it.</p>
+          <button class="button button-primary" id="resume-button">Back to the adventure <span class="button-arrow">→</span></button>
+          <button class="button button-secondary" id="restart-button">Restart this level</button>
+          <button class="text-button dialog-link" id="pause-menu-button">Return to main menu</button>
+        </div>
+      </section>
+
+      <section class="screen compact-screen" id="info-screen" hidden>
+        <div class="dialog-card info-card">
+          <button class="close-button" id="info-close" aria-label="Close">×</button>
+          <div class="dialog-kicker" id="info-kicker">YOUR FIELD GUIDE</div>
+          <h2 id="info-title">How to play</h2>
+          <div id="info-content" class="info-content"></div>
+          <button class="button button-primary" id="info-ok">Got it</button>
+        </div>
+      </section>
+
+      <section class="screen compact-screen" id="level-screen" hidden>
+        <div class="dialog-card level-select-card">
+          <button class="close-button" id="levels-close" aria-label="Close">×</button>
+          <div class="dialog-kicker">PICK YOUR PATH</div>
+          <h2>Choose a level</h2>
+          <div class="level-grid" id="level-grid"></div>
+          <div class="level-footer"><span>✦</span> New paths open as you play</div>
+        </div>
+      </section>
+
+      <section class="screen compact-screen result-screen" id="result-screen" hidden>
+        <div class="dialog-card result-card">
+          <div class="result-badge" id="result-badge">✦</div>
+          <div class="dialog-kicker" id="result-kicker">NICE WORK</div>
+          <h2 id="result-title">Meadow mastered!</h2>
+          <p id="result-copy">A bright new path is waiting.</p>
+          <div class="result-stats" id="result-stats"></div>
+          <button class="button button-primary" id="result-primary">Continue <span class="button-arrow">→</span></button>
+          <button class="text-button dialog-link" id="result-secondary">Back to the map</button>
+        </div>
+      </section>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <div class="mobile-controls" id="mobile-controls" hidden>
+        <div class="move-pad">
+          <button class="touch-button" data-control="left" aria-label="Move left">‹</button>
+          <button class="touch-button" data-control="right" aria-label="Move right">›</button>
+        </div>
+        <button class="touch-button jump-touch" data-control="jump" aria-label="Jump"><span>↑</span><small>JUMP</small></button>
+        <button class="touch-button action-touch" data-control="action" aria-label="Throw a seed"><span>✦</span><small>SEED</small></button>
+      </div>
+      <div class="touch-hint" id="touch-hint" hidden>HOLD ◀ ▶ TO MOVE · TAP ↑ TO JUMP</div>
+    </div>
+    <footer class="site-footer"><span>SKYBOUND SPROUT</span><span>Made for curious explorers <i>✦</i></span><span>WASD / ARROWS · SPACE TO JUMP</span></footer>
+  </main>
+  <script src="game.js?v=20"></script>
+</body>
+</html>
